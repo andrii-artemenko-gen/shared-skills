@@ -9,6 +9,7 @@ Use this repo as the source of truth for globally reusable Codex skills. Keep pr
 ```text
 .agents/
   skills/                    # repository-native Codex skill folders
+    .system/                 # vendored Codex system skills
     <skill-name>/SKILL.md
 scripts/init-links.sh        # links .agents/skills into Codex home
 ```
@@ -33,6 +34,8 @@ The script links this repo's `.agents/skills/` directory to:
 ${CODEX_HOME:-$HOME/.codex}/skills
 ```
 
+This replaces the Codex skills root with a symlink. The repository therefore includes `.agents/skills/.system/` so system skills such as `skill-creator` remain discoverable.
+
 If that path already exists, the script stops unless it is already linked to this repo. Use `--replace` only when you intentionally want the script to move the existing path to a timestamped backup and create the link.
 
 ```bash
@@ -45,6 +48,7 @@ If that path already exists, the script stops unless it is already linked to thi
 - Each skill folder must contain `SKILL.md`.
 - Keep scripts, references, and assets inside the owning skill folder.
 - Do not store secrets, private customer data, local memory, or project runtime state here.
+- Keep `.agents/skills/.system/` in sync when Codex updates bundled system skills.
 - Keep reusable setup changes on `initial-setup`; put private or experimental skills on separate branches.
 
 ## Branches
