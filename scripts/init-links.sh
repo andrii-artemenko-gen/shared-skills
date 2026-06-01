@@ -5,7 +5,7 @@ usage() {
   cat <<'EOF'
 Usage: scripts/init-links.sh [--replace]
 
-Links this repository's skills/ directory into Codex home:
+Links this repository's .agents/skills directory into Codex home:
   ${CODEX_HOME:-$HOME/.codex}/skills
 
 Options:
@@ -36,7 +36,7 @@ done
 
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 repo_root=$(CDPATH= cd -- "$script_dir/.." && pwd)
-source_skills="$repo_root/skills"
+source_skills="$repo_root/.agents/skills"
 
 if [ ! -d "$source_skills" ]; then
   echo "Missing source skills directory: $source_skills" >&2
@@ -76,4 +76,3 @@ fi
 
 ln -s "$source_skills" "$target"
 echo "Linked: $target -> $source_skills"
-
