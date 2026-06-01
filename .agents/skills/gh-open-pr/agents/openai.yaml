@@ -1,0 +1,4 @@
+interface:
+  display_name: "GH Open PR"
+  short_description: "Open GitHub PRs with repo title standards"
+  default_prompt: "Use $gh-open-pr to push my branch and open a pull request."
