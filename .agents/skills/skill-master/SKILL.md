@@ -160,7 +160,7 @@ You must actively monitor the repository and execute the following alert rules t
 ### 4. Detect and Flag Monolithic Architecture
 
 - **Directive:** Prevent token bloat and lack of focus by enforcing strict cohesion limits and token limits.
-- **Agent Execution:** On skill creation or modification, calculate the Skill Cohesion Score (SCS). Call the external `scripts/measure_tokens.py` file to track token usage. If the score is too low or token count exceeds `[Always-Loaded Token Guardrail]`, halt the operation and output:
+- **Agent Execution:** On skill creation or modification, calculate the Skill Cohesion Score (SCS). Call `${CODEX_HOME:-$HOME/.codex}/scripts/measure_tokens.py` to track token usage. If the score is too low or token count exceeds `[Always-Loaded Token Guardrail]`, halt the operation and output:
   > `[COMPLIANCE ALERT: Monolith Detected. Cohesion Score is [SCS]. Token count is [Count]. Split this into single-purpose skills.]`
 
 ### 5. Optimize Discoverability to Prevent Duplication
@@ -202,7 +202,7 @@ Enforce structural guardrails to mitigate inherent ecosystem limitations. Execut
 ### 1. Execute External Token Measurement Script
 
 - **Directive:** Keep scripting tools strictly in standard libraries. Enforce token limits deterministically using an independent evaluation script rather than relying on LLM estimation.
-- **Agent Execution:** Execute the standalone `scripts/measure_tokens.py` file located in the skill directory to measure token limits accurately before loading. Pass the target definition file path as an argument. If the script fails, abort the loading process.
+- **Agent Execution:** Execute `${CODEX_HOME:-$HOME/.codex}/scripts/measure_tokens.py` to measure token limits accurately before loading. Pass the target definition file path as an argument. If the script fails, abort the loading process.
 
 ### 2. Combat Skill Rot Constantly
 
