@@ -1,0 +1,108 @@
+# Strapi Content-Type Builder schema change request.
+# Fill this file, then ask Codex to use the strapi-content-type-builder-api skill.
+
+mode: plan # plan | dry-run | apply
+apply_approved: false # true only when the agent may POST after showing the plan
+
+strapi:
+  project_root: /absolute/path/to/strapi-project
+  base_url: http://localhost:1337
+  auth:
+    # Secret values must live in env vars, not in this file.
+    source: bearer_env # bearer_env | cookie_env | local_login_env
+    token_env: STRAPI_ADMIN_TOKEN
+    cookie_env: STRAPI_ADMIN_COOKIE
+    login:
+      email_env: STRAPI_ADMIN_EMAIL
+      password_env: STRAPI_ADMIN_PASSWORD
+
+source_verification:
+  require_installed_route_check: true
+  route_file: node_modules/@strapi/content-type-builder/dist/server/routes/admin.js
+  validation_globs:
+    - node_modules/@strapi/content-type-builder/dist/server/controllers/validation/*.js
+    - node_modules/@strapi/content-type-builder/dist/server/controllers/validation/*.mjs
+
+components:
+  - action: create # create | update | delete
+    uid: shared.seo
+    category: shared
+    display_name: SEO
+    icon: search
+    attributes:
+      metaTitle:
+        type: string
+        required: true
+        maxLength: 60
+      metaDescription:
+        type: text
+        required: false
+        maxLength: 160
+
+content_types:
+  - action: create # create | update | delete
+    uid: api::article.article
+    kind: collectionType # collectionType | singleType
+    singularName: article
+    pluralName: articles
+    displayName: Article
+    draftAndPublish: true
+    attributes:
+      title:
+        type: string
+        required: true
+        unique: false
+      slug:
+        type: uid
+        targetField: title
+        required: true
+      seo:
+        type: component
+        component: shared.seo
+        repeatable: false
+      body:
+        type: dynamiczone
+        components:
+          - shared.rich-text
+          - shared.media-block
+
+relations:
+  - owner_uid: api::article.article
+    attribute: author
+    type: relation
+    relation: manyToOne
+    target: plugin::users-permissions.user
+    targetAttribute: articles
+    notes: Content types may support many-to-many; verify installed validation before using it.
+
+dynamic_zones:
+  - owner_uid: api::article.article
+    attribute: body
+    components:
+      - shared.rich-text
+      - shared.media-block
+
+expected_generated_files:
+  - src/api/article/content-types/article/schema.json
+  - src/components/shared/seo.json
+
+expected_schema_assertions:
+  # For every updated content type/component, list the final attribute names.
+  # Sparse changed-field-only update payloads are forbidden.
+  - owner_uid: api::article.article
+    final_attributes:
+      - title
+      - slug
+      - seo
+      - body
+
+verification_commands:
+  - npm run strapi -- content-types:list
+  - test -f src/api/article/content-types/article/schema.json
+  - npm test
+
+risk_acknowledgements:
+  dirty_worktree_ok: false
+  field_renames_reviewed: false
+  component_many_to_many_verified_against_installed_source: false
+  updated_models_have_full_final_attribute_lists: false
